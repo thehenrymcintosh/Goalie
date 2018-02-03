@@ -1,0 +1,32 @@
+{
+  "name": "Goalie",
+  "version": "1.0.0",
+  "description": "Save your goals",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js",
+    "package": "electron-packager ./ Goalie --Darwin --out ~/Desktop/Goalie --version 1.4.13 --overwrite --icon=./assets/icons/mac/icon.icns"
+  },
+  "author": "Henry McIntosh",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^1.7.12",
+    "nconf": "^0.8.4"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.23.6",
+    "electron-builder": "^11.2.3",
+    "electron-packager": "^8.4.0",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-notify": "^3.2.0",
+    "gulp-plumber": "^1.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-uglify": "^3.0.0",
+    "gulp-util": "^3.0.8",
+    "neat": "^1.2.2",
+    "node-neat": "^2.0.0-beta.0"
+  }
+}

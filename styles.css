@@ -1,0 +1,167 @@
+html, body{
+  -webkit-app-region: drag;
+}
+
+body{
+  margin: 0px;
+  background-image: url("imgs/img_2.jpg");
+  /*background-image: url("http://www.bluelyon.tech/wp-content/uploads/2017/01/lion-image.jpg");*/
+  background-position: center center;
+  background-size: cover;
+  font-family: 'Open Sans', sans-serif;
+}
+h1 {
+  color: white;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 300%;
+  display: inline-block;
+  -webkit-app-region: no-drag;
+}
+.margin-top_100px{
+  margin-top: 100px;
+}
+.margin-bottom_15px{
+  margin-bottom: 15px;
+}
+.margin-top_0px{
+  margin-top: 0px;
+}
+.margin-bottom_35px{
+  margin-bottom: 35px;
+}
+h2 {
+  color: white;
+  -webkit-app-region: no-drag;
+}
+.full_container{
+  padding: 40px;
+  box-sizing: border-box;
+  background-color: rgba(0,0,0,0.1);
+}
+#overlay{
+  background-image: url("imgs/overlay-vignette.png");
+  background-position: center center;
+  background-size: cover;
+}
+.btm_border{
+  background-color: rgba(0,0,0,0);
+  width: 400px;
+  border: none;
+  border-bottom: white 2px solid;
+  height: 30px;
+  color: white;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 25px;
+  padding: 2px;
+  text-align: center;
+  margin-bottom: 40px;
+  -webkit-app-region: no-drag;
+}
+.btm_border:focus{
+  outline: none;
+}
+#new_goal{
+  height: 100vh;
+  width: 100vw;
+  text-align: center;
+}
+
+.get_started{
+  margin-top: 30px;
+  background-color: rgba(0,0,0,0.2);
+  border: 2px white solid;
+  font-size: 20px;
+  border-radius: 0px;
+  color: white;
+  padding: 10px 30px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+.get_started:hover{
+  background-color: white;
+  color: black;
+}
+
+
+
+#goal{
+  position: absolute;
+  left: 50%;
+  top: 277px;
+  transform:translateX(-50%);
+  border-radius: 5px;
+
+  width: 200px;
+  height: 50px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  transition: all 0.3s ease;
+  -webkit-app-region: no-drag;
+}
+#goal.done{
+  top: 247px;
+  transition: all 1s ease;
+    border-radius: 50%;
+    height: 105px;
+    width: 105px;
+}
+#goal p{
+  margin: 0;
+  text-align: center;
+  font-size: 20px;
+}
+#goal:hover {
+  background-color: green;
+  color: white;
+  border: 2px green solid;
+}
+#goal.done:hover{
+      border: 2px white solid;
+}
+
+.back{
+  border: white 2px solid;
+  color: white;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  padding: 5px 10px;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+.back:hover{
+  background-color: white;
+  color: black;
+}
+
+.checkmark{
+  position: absolute;
+  left: 50%;
+  transform: translate(-20px, 60px);
+}
+
+.checkmark span{
+  background-color: white;
+  position: absolute;;
+  height: 10px;
+  transition: all 0s 1s ease;
+  opacity: 0;
+
+}
+.checkmark .kick{
+  width: 60px;
+  transform: rotateZ(-45deg);
+  border-radius: 0px 0px 0px 5px;
+
+}
+.checkmark .stem{
+  width: 30px;
+  transform: rotateZ(45deg);
+  border-radius: 0px 0px 5px 0px;
+  top: 10px;
+  left: -10px;
+}
