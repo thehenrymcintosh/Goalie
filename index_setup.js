@@ -7,20 +7,31 @@ var btnDone = document.querySelector('#back');
 var goalField = document.querySelector('#goal');
 var nameField = document.querySelector('#name');
 var colorPicker = document.querySelector('#color');
+var colorPickerMain = document.querySelector('#color_main');
 var body = document.querySelector('body');
+var path = configuration.readSettings('backgroundPath');
+var btnReset = document.querySelector('#reset');
 var color;
 
-window.onLoad = defaultGoal();
-function defaultGoal() {
+window.onLoad = reset();
+function reset() {
   goalField.innerHTML = configuration.readSettings('Goal');  
   nameField.innerHTML = configuration.readSettings('Name');
+  var path = configuration.readSettings('backgroundPath');
   color = configuration.readSettings('Color');
   colorPicker.value = color;
-  body.setAttribute("style", "--depth-color: " + color +"");
+
+  colorMain = configuration.readSettings('ColorMain');
+  colorPickerMain.value = colorMain;
+  body.setAttribute("style", "--depth-color: " + colorPicker.value + "; --main-color: " + colorPickerMain.value + "; --background-img: url('" + path + "');")
+  
 }
 
 colorPicker.addEventListener('change', ()=>{
-  body.setAttribute("style", "--depth-color: " + colorPicker.value +"");
+    body.setAttribute("style", "--depth-color: " + colorPicker.value + "; --main-color: " + colorPickerMain.value + "; --background-img: url('" + path + "');")
+});
+colorPickerMain.addEventListener('change', ()=>{
+    body.setAttribute("style", "--depth-color: " + colorPicker.value + "; --main-color: " + colorPickerMain.value + "; --background-img: url('" + path + "');")
 });
 
 btnDone.addEventListener('click', ()=>{
@@ -30,11 +41,19 @@ btnDone.addEventListener('click', ()=>{
   ipc.send('set-goal', goal);
   ipc.send('set-name', name);
   ipc.send('set-color', colorPicker.value );
-
+  ipc.send('set-maincolor', colorPickerMain.value );
+  ipc.send('set-bgimg', colorPickerMain.value );
 },false)
 
-function drophandler() {
-  var holder = document.querySelector('body');
+btnReset.addEventListener('click', () => {
+  
+        configuration.saveSettings('Color', '#e78b00'); // reset highlight color
+        configuration.saveSettings('ColorMain', '#ffffff'); // reset main color
+        configuration.saveSettings('backgroundPath', './imgs/img_3.jpeg'); // reset bg
+        reset();
+});
+
+  var holder = document;
 
   holder.ondragover = () => {
       return false;
@@ -52,9 +71,14 @@ function drophandler() {
       e.preventDefault();
 
       for (let f of e.dataTransfer.files) {
-          console.log('File(s) you dragged here: ', f.path)
+        if(f.type.includes('image')){
+            path = f.path;
+            body.setAttribute("style", "--depth-color: " + colorPicker.value + "; --main-color: " + colorPickerMain.value + "; --background-img: url('" + path + "');")
+            configuration.saveSettings('backgroundPath', path);
+        }
+
       }
       
       return false;
   };
-};
+

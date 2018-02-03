@@ -1,3 +1,4 @@
+
 const remote = require('electron').remote
 const main = remote.require('./main.js')
 const ipc = require('electron').ipcRenderer
@@ -7,28 +8,45 @@ var name = document.querySelector('#name');
 var goal = document.querySelector('#goal span');
 var goalWrapper = document.querySelector('.goal__wrapper');
 var successWrapper = document.querySelector('.success__wrapper');
+var successText = document.querySelector('.success__title');
 var successCheck = document.querySelector('.success__checkbox span');
 var settings = document.querySelector('.settings');
 var body = document.querySelector('body');
-var date_achieved = null;
-var midnight = null;
-var time_check = null;
+var streak = document.querySelector('.streak');
+var streakVal = document.querySelector('.streak .number');
+var path = configuration.readSettings('backgroundPath');
 
-window.onLoad = defaultGoal();
-function defaultGoal() {
+var arrStreakText = ['You achieved your daily goal!', "Yay! You completed your daily goal!", "Well done " + configuration.readSettings('Name') + ", keep up the good work!", "You're on a " + configuration.readSettings('Streak') + " day streak, keep it up!" ];
+
+window.onLoad = reset();
+function reset() {
   goal.innerHTML = configuration.readSettings('Goal');  
   name.innerHTML = configuration.readSettings('Name');
-  color = configuration.readSettings('Color');
-  body.setAttribute("style", "--depth-color: " + color +"");
+  streakVal.innerHTML = configuration.readSettings('Streak');
+  setStreakText();
+  if(configuration.readSettings('Streak') > 0 ){
+    streak.classList.remove('hide');
+  } else {
+    streak.classList.add('hide');
+  }
+  if(configuration.readSettings('onStreak')){
+    ui_goal_acheived();
+    main.resetCountdownRemote();
+  } else {
+    ui_goal_reset();
+  }
+  streak
+  color = configuration.readSettings('Color');  
+  colorMain = configuration.readSettings('ColorMain');
+  // body.setAttribute("style", "--depth-color: " + color +"");
+  // body.setAttribute("style", "--main-color: " + colorMain +"");
+  body.setAttribute("style", "--depth-color: " + color + "; --main-color: " + colorMain +"; --background-img: url('" + path + "');");
 }
 
-goal.addEventListener('click',() =>{
+goalWrapper.addEventListener('click',() =>{
   ipc.send('ipcgoal_achieved');
   goal_achieved();
 });
-ipc.on('ipcgoal_achieved', function (event, arg) {
-  goal_achieved();
-})
 
 settings.addEventListener('click', ()=>{
     main.changeScreen_goalChange();
@@ -37,14 +55,69 @@ settings.addEventListener('click', ()=>{
 
 
 function goal_achieved(){
+  let streakLength = configuration.readSettings('Streak') + 1;
+  configuration.saveSettings('Streak', streakLength );
+  configuration.saveSettings('onStreak', true);
+  streakVal.innerHTML = streakLength;
+  ui_goal_acheived();
+}
+
+function ui_goal_acheived(){
   goalWrapper.classList.add('hide');
   successWrapper.classList.remove('hide')
   successCheck.classList.add('check');
+  let streakLength = configuration.readSettings('Streak');
+  streakVal.innerHTML = streakLength;
+  streak.classList.remove('hide');
+}
+function ui_goal_reset(){
+  goalWrapper.classList.remove('hide');
+  successWrapper.classList.add('hide')
+  successCheck.classList.remove('check');
+  let streakLength = configuration.readSettings('Streak');
+  streakVal.innerHTML = streakLength;
+  if(streakLength > 0 ){
+    streak.classList.remove('hide');
+  } else {
+    streak.classList.add('hide');
+  }
+}
+
+function setStreakText(){
+  let i = getRandomInt(arrStreakText.length);
+  successText.innerHTML = arrStreakText[i];
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
 }
 
 ipc.on('ipcgoal_reset', function (event, arg) {
   // goal_reset();
 })
+
+ipc.on('update' , reset);
+
+var holder = document;
+
+  holder.ondragover = () => {
+      return false;
+  };
+
+  holder.ondragleave = () => {
+      return false;
+  };
+
+  holder.ondragend = () => {
+      return false;
+  };
+
+  holder.ondrop = () => {
+      return false;
+  };
+
+
+
 
 // function goal_achieved() {
 

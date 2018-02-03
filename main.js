@@ -1,3 +1,4 @@
+
 const electron = require('electron');
 const {app, BrowserWindow} = electron
 const ipc = require('electron').ipcMain
@@ -20,12 +21,16 @@ iconName = process.platform === 'win32' ? 'tray_2.png' : 'tray_2.png'   // Icon 
 
 
 app.on('ready', function () {
-  win = new BrowserWindow({width:800, height:450, frame:true, resizable: true,}) // Make app window
+  win = new BrowserWindow({width:800, height:450, frame:false, resizable: false,}) // Make app window
 
   win.icon = 'file://' + __dirname + '/assets/icons/png/64x64.png'  //window icon (not really necessary as window is hidden)
+    
+  try{
+
+  
 
     if (!configuration.readSettings('Goal')) { //check if config goal is set
-      var goal = 'Eat too many wasabi peas'; //default goal
+      var goal = 'Eat 5 muffins'; //default goal
       configuration.saveSettings('Goal', goal); //save goal
     };
 
@@ -42,11 +47,35 @@ app.on('ready', function () {
     if (!configuration.readSettings('Color')) { //check if streak is set
       configuration.saveSettings('Color', '#e78b00'); // save streak
     };
+    if (!configuration.readSettings('ColorMain')) { //check if streak is set
+      configuration.saveSettings('ColorMain', '#ffffff'); // save streak
+    };
+    if (configuration.readSettings('onStreak') == null) { //check if streak status is set
+      configuration.saveSettings('onStreak', false); // save streak status
+    };
+    if (!configuration.readSettings('backgroundPath')) { //check if bg  is set
+      configuration.saveSettings('backgroundPath', './imgs/img_3.jpeg'); // save bg
+    };
+  }catch(err){
+    configuration.saveSettings('Color', '#e78b00'); // reset highlight color
+    configuration.saveSettings('ColorMain', '#ffffff'); // reset main color
+    configuration.saveSettings('backgroundPath', './imgs/img_3.jpeg'); // reset bg
+    configuration.saveSettings('Goal', 'Eat too many wasabi peas'); // reset goal
+    configuration.saveSettings('Name', 'Mycroft'); // reset name
+    configuration.saveSettings('Streak', 0); // reset streak
+    configuration.saveSettings('onStreak', false); 
+    console.log(err);
+
+    }
+
 
     win.loadURL('file://' + __dirname + '/index_main.html'); // load main screen
     
     appIcon = new Tray(iconPath_1) // tray
 
+    if(configuration.readSettings('onStreak')){
+      appIcon.setImage(iconPath_2);
+    }
     var contextMenu = get_menu(); // function to reset tray menu
     appIcon.setToolTip('Goalie') ;     // set tray tooltip
     appIcon.setContextMenu(contextMenu); //set tray menu
@@ -68,23 +97,28 @@ var streak = configuration.readSettings('Streak');
 
 
 ipc.on('set-goal', function (event, arg) {
-  goal = `${arg}`
-  configuration.saveSettings('Goal', goal);
+  let currentGoal = configuration.readSettings('Goal');
+  if (currentGoal != arg){
+    configuration.saveSettings('Goal', arg);
+    resetAll();
+  }
+  
 
   const contextMenu = get_menu()
   appIcon.setContextMenu(contextMenu)
 })
 
 ipc.on('set-name', function (event, arg) {
-  name = `${arg}`
-  configuration.saveSettings('Name', name);
+  configuration.saveSettings('Name', arg);
   const contextMenu = get_menu()
   appIcon.setContextMenu(contextMenu)
 })
 
 ipc.on('set-color', function (event, arg) {
-  color = arg;
-  configuration.saveSettings('Color', color);
+  configuration.saveSettings('Color', arg);
+})
+ipc.on('set-maincolor', function (event, arg) {
+  configuration.saveSettings('ColorMain', arg);
 })
 
 ipc.on('get-goal', function (event, arg) {
@@ -103,20 +137,61 @@ ipc.on('change-tray_1', function (event, arg) {
 })
 ipc.on('ipcgoal_achieved', goalAcheived);
 
+
+
+
+
+var interval;
+
 function goalAcheived() {
+  configuration.saveSettings('onStreak', true);
   appIcon.setImage(iconPath_2);
+  resetCountdown();
+}
+exports.resetCountdownRemote = () => {resetCountdown();}
+function resetCountdown(midnight){
+  clearInterval(interval);
+  var midnight = new Date();
+  midnight.setHours(24,0,0,0);
+  interval = setInterval(checkMidnight,1000, midnight);
+}
+
+function checkMidnight(midnight){
+  var millisTillMidnight = midnight - new Date();
+  console.log(millisTillMidnight);
+  if (millisTillMidnight < 0) {
+      clearInterval(interval);
+      if(!configuration.readSettings('onStreak')){
+        resetAll();
+      } else {
+        newDay();
+      }
+      
+  }
+}
+exports.resetAllRemote = () => {resetAll();}
+resetAll = () => {
+  configuration.saveSettings('Streak', 0);
+  configuration.saveSettings('onStreak', false);
+  clearInterval(interval);
+  newDay()
+}
+newDay = ()=> {
+  if(configuration.readSettings('onStreak')){
+    resetCountdown();
+    configuration.saveSettings('onStreak', false);
+  }
+  appIcon.setImage(iconPath_1);
+  win.webContents.send('update');
+
 }
 
 function get_menu(){
   contextmenu = Menu.buildFromTemplate([{
 
-    label: 'Hello ' + configuration.readSettings('Name')},
+    label: 'Hello ' + configuration.readSettings('Name') },
     {
-      label:'Daily Goal: ' + configuration.readSettings('Goal'),
-      click: goalAcheived
-      // click: function () {
-      //   win.webContents.send( 'ipcgoal_achieved' );
-      // }
+      label:'Daily Goal: ' + configuration.readSettings('Goal')
     },
 
     {

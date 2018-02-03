@@ -20,11 +20,12 @@ html, body{
 $depth-color: #e78b00;
 $shadow-color: rgba(0, 0, 0, 0.38);
 body{
-
+    --main-color: #FFFFFF;
     --depth-color: #e78b00;
     --shadow-color: rgba(0, 0, 0, 0.38);
-
-     background-image: url("../imgs/img_3.jpeg");
+    --background-img: url("./imgs/img_3.jpeg");
+    $background-img : url("./imgs/img_3.jpeg");
+     background-image: var(--background-img, $background-img);
      cursor: default;
      margin: 0;
      height: 100vh;
@@ -58,7 +59,7 @@ body{
 
 .header{
     display: inline-block;
-    color: white;
+    color: var(--main-color);;
     font-size: 60px;
     @include text-shadow(var(--depth-color), var(--shadow-color));
     margin: 0;
@@ -73,7 +74,7 @@ body{
 }
 .goal{
     &__wrapper{
-        color: white;
+        color: var(--main-color);;
         position: relative;
         width: 100%;
         @include transition(0.3s);
@@ -89,7 +90,7 @@ body{
     width: auto;
     margin: 20px auto;
     padding: 20px 30px;
-    border: 1px solid white;
+    border: 1px solid var(--main-color);;
     display: inline-block;
     background-color: rgba(0, 0, 0, 0.144);
     overflow: hidden;
@@ -105,12 +106,12 @@ body{
         z-index: 1;
     }
     &:before, &:after{
-        background-color: white;
+        background-color: var(--main-color);;
         content: '';
         height: 500%;
         width: 7%;
         position: absolute;
-        @include transition(0.3s);
+        @include transition(0.4s);
     }
     &:before{
         left: 0;
@@ -124,11 +125,11 @@ body{
     }
     &.animated:hover{
         &:before, &:after{
-            width: 110%;
+            width: 70%;
         }
         span{
             @include text-shadow(var(--depth-color), var(--shadow-color));
-            color: white;
+            color: var(--main-color);;
             left: -4px;
             top: -4px;
         }
@@ -142,7 +143,7 @@ body{
 
 .success{
 
-    color: white;
+    color: var(--main-color);;
     &__wrapper{
         top: 0;
         position: absolute;
@@ -153,7 +154,7 @@ body{
         }
     }
     &__title{
-        color: white;
+        color: var(--main-color);;
         margin-top: 0;
         margin-bottom: 20px;
         font-size: 26px;
@@ -179,7 +180,7 @@ body{
         transform: rotateZ(-45deg);
         margin: auto;
         span{
-            box-shadow: inset 10px -10px white;
+            box-shadow: inset 10px -10px var(--main-color);;
             height: 0;
             width: 10px;
             display: block;
@@ -199,7 +200,7 @@ body{
         font-size: 30px;
     }
     .number{
-        color: white;
+        color: var(--main-color);;
         @include text-shadow(var(--depth-color), var(--shadow-color));
         font-size: 26px;
         top: -4px;
@@ -221,7 +222,7 @@ body{
         width: 100%;
     }
     &:hover{
-        color: white;
+        color: var(--main-color);;
         transform: rotateZ(32deg);
     }
 }
@@ -230,36 +231,47 @@ body{
     position: absolute;
     right: 20px;
     top: 15px;
-    height: 30px;
-    width: 30px;
     color: rgb(117, 117, 117);
     cursor: pointer;
     @include transition(0.3s);
-    svg{
-        height: 100%;
-        width: 100%;
+    display: flex;
+    align-items: center;
+    span{
+        display: inline-block;
+        padding-right: 10px;
+        color: var(--main-color);
+        @include text-shadow(var(--depth-color), var(--shadow-color))
     }
-    &:hover{
-        color: white;
+    svg{
+        @include transition(0.3s);
+        display: inline-block;
+        height: 30px;
+        width: 30px;
+    }
+    &:hover svg{
+        color: var(--main-color);;
         transform: translateX(5px);
     }
 }
 
 .goal__input{
     &__wrapper{
-        color: white;
+        color: white ;
         display: flex;
         padding: 5px;
         justify-content: space-between;
         max-width: 500px;
         margin: auto;
-        border-left: white 1px solid;
-        border-right: 1px white solid;
-        background-color: rgba(0,0,0,0.14);
+        border-left: var(--main-color) 1px solid;
+        border-right: 1px var(--main-color) solid;
+        background-color: rgba(0,0,0,0.34);
         h3 {
             margin: 0;
             padding: 10px;
             display: inline-block;
+        }
+        &.smaller h3{
+            font-size: 12px;
         }
     }
     &__color{
@@ -267,6 +279,7 @@ body{
         margin: 8px;
     }
 }
+
 .arrow{
     height: 15px;
     width: 20px;
@@ -277,4 +290,11 @@ body{
         height: 100%;
         width: 100%;
     }
+}
+
+.pointer{
+    cursor: pointer;
+}
+.text{
+    cursor: text;
 }
