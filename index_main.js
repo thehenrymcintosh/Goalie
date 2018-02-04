@@ -59,6 +59,8 @@ function goal_achieved(){
   configuration.saveSettings('Streak', streakLength );
   configuration.saveSettings('onStreak', true);
   streakVal.innerHTML = streakLength;
+  arrStreakText = ['You achieved your daily goal!', "Yay! You completed your daily goal!", "Well done " + configuration.readSettings('Name') + ", keep up the good work!", "You're on a " + streakLength + " day streak, keep it up!" ];
+  setStreakText();
   ui_goal_acheived();
 }
 
